@@ -5,7 +5,13 @@ defmodule Jido.ToolRenderers.AskUser do
   def render(assigns) do
     args = assigns.args || %{}
     question = args["question"] || ""
-    choices = args["choices"] || []
+    choices =
+      case args["choices"] do
+        nil -> []
+        list when is_list(list) -> list
+        str when is_binary(str) -> String.split(str, ",") |> Enum.map(&String.trim/1)
+        _ -> []
+      end
     response = assigns.content
 
     selected =
