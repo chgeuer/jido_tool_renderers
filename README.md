@@ -28,7 +28,7 @@ npm install @xterm/xterm @xterm/addon-fit
 ┌─────────────────────────────────────────────────────────┐
 │                   Consuming LiveView App                │
 │  (copilot_lv, symphony, etc.)                           │
-└────────────┬──────────────────────────────┬──────────────┘
+└────────────┬──────────────────────────────┬─────────────┘
              │ raw events                   │
              ▼                              │
 ┌────────────────────────┐                  │
@@ -38,17 +38,17 @@ npm install @xterm/xterm @xterm/addon-fit
              │ SessionEvent structs         │
              ▼                              ▼
 ┌────────────────────────────────────────────────────────┐
-│                    SessionViewer                        │
+│                    SessionViewer                       │
 │  ┌──────────────────────┐  ┌────────────────────────┐  │
-│  │    Rich (HTML)        │  │  Terminal (xterm.js)    │  │
+│  │    Rich (HTML)       │  │  Terminal (xterm.js)   │  │
 │  │  ┌────────────────┐  │  │  ┌──────────────────┐  │  │
-│  │  │ Tool Renderers │  │  │  │  AnsiFormatter    │  │  │
-│  │  │ (per-tool UI)  │  │  │  │  (ANSI output)    │  │  │
+│  │  │ Tool Renderers │  │  │  │  AnsiFormatter   │  │  │
+│  │  │ (per-tool UI)  │  │  │  │  (ANSI output)   │  │  │
 │  │  └────────────────┘  │  │  └──────────────────┘  │  │
 │  └──────────────────────┘  └────────────────────────┘  │
-│                 Interaction Controls                     │
-│           (interactive / readonly_live / readonly)       │
-└─────────────────────────────────────────────────────────┘
+│                 Interaction Controls                   │
+│           (interactive / readonly_live / readonly)     │
+└────────────────────────────────────────────────────────┘
 ```
 
 ## Core Concepts
