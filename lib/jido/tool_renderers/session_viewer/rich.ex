@@ -37,7 +37,7 @@ defmodule Jido.ToolRenderers.SessionViewer.Rich do
 
     ~H"""
     <div class="chat chat-end">
-      <div class="chat-bubble chat-bubble-primary max-w-full overflow-hidden relative">
+      <div class="chat-bubble chat-bubble-primary max-w-[80%] overflow-hidden relative">
         <div class="sticky top-0 z-10 flex justify-end gap-1 mb-1">
           <button
             class="btn btn-ghost btn-xs text-primary-content/70 hover:text-primary-content"
@@ -88,7 +88,7 @@ defmodule Jido.ToolRenderers.SessionViewer.Rich do
 
       ~H"""
       <div class="chat chat-start group">
-        <div class="chat-bubble bg-base-100 text-base-content border border-base-300 max-w-full overflow-hidden relative">
+        <div class="chat-bubble bg-base-100 text-base-content border border-base-300 max-w-[80%] overflow-hidden relative">
           <div class="sticky top-0 z-10 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
             <button
               class="btn btn-ghost btn-xs text-base-content/50 hover:text-base-content"
@@ -201,8 +201,8 @@ defmodule Jido.ToolRenderers.SessionViewer.Rich do
 
     ~H"""
     <div class="card card-compact bg-base-300/50 my-1">
-      <div class="card-body py-2 px-3">
-        <div class="flex items-center gap-2 mb-1">
+      <div class="card-body py-2 px-3 flex-row items-start gap-2">
+        <div class="flex items-center gap-2 shrink-0">
           <span class={["font-mono text-xs px-1.5 py-0.5 rounded", tool_badge_class(@tool)]}>
             {@tool}
           </span>
@@ -215,7 +215,9 @@ defmodule Jido.ToolRenderers.SessionViewer.Rich do
               <span class="loading loading-spinner loading-xs text-warning"></span>
           <% end %>
         </div>
-        {@renderer.render(assigns)}
+        <div class="min-w-0 flex-1">
+          {@renderer.render(assigns)}
+        </div>
       </div>
     </div>
     """
