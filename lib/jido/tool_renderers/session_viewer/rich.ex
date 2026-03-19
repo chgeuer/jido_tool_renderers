@@ -190,6 +190,19 @@ defmodule Jido.ToolRenderers.SessionViewer.Rich do
     ~H"""
     <div class="card card-compact bg-base-300/50 my-1">
       <div class="card-body py-2 px-3">
+        <div class="flex items-center gap-2 mb-1">
+          <span class={["font-mono text-xs px-1.5 py-0.5 rounded", tool_badge_class(@tool)]}>
+            {@tool}
+          </span>
+          <%= cond do %>
+            <% @completed && @error_msg == "" -> %>
+              <span class="text-success text-xs">✓</span>
+            <% @completed -> %>
+              <span class="text-error text-xs">✗</span>
+            <% true -> %>
+              <span class="loading loading-spinner loading-xs text-warning"></span>
+          <% end %>
+        </div>
         {@renderer.render(assigns)}
       </div>
     </div>
@@ -216,8 +229,11 @@ defmodule Jido.ToolRenderers.SessionViewer.Rich do
     ~H"""
     <div id={"tg-#{@event.id}"}>
       <details class="my-1 border border-base-300 rounded-lg bg-base-200/30" open={!@all_completed}>
-        <summary class="cursor-pointer text-sm text-base-content/60 hover:text-base-content px-3 py-2 flex items-center gap-2">
-          <span>{@summary}</span>
+        <summary class="cursor-pointer text-sm text-base-content/60 hover:text-base-content px-3 py-2 flex items-center gap-2 flex-wrap">
+          <span class="text-base-content/40">⚙️ {@tool_count}</span>
+          <span :for={name <- @tool_names} class={["font-mono text-[0.65rem] px-1.5 py-0.5 rounded", tool_badge_class(name)]}>
+            {name}
+          </span>
           <%= if @has_spinner do %>
             <span class="loading loading-dots loading-xs"></span>
           <% end %>
@@ -376,4 +392,49 @@ defmodule Jido.ToolRenderers.SessionViewer.Rich do
     do: "#{Float.round(n / 1_000, 1)}k"
 
   defp format_tokens(n), do: "#{n}"
+
+  defp tool_badge_class(name) do
+    canonical = Jido.ToolRenderers.canonical_tool_name(name)
+
+    case canonical do
+      # Shell — warm amber
+      n when n in ~w[bash read_bash write_bash stop_bash list_bash] ->
+        "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+
+      # File write/edit — blue
+      n when n in ~w[edit create write apply_patch] ->
+        "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300"
+
+      # File read — emerald
+      n when n in ~w[view read_file] ->
+        "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
+
+      # Search — violet
+      n when n in ~w[grep glob rg] ->
+        "bg-violet-100 text-violet-800 dark:bg-violet-900/40 dark:text-violet-300"
+
+      # Web — cyan
+      n when n in ~w[web_search web_fetch] ->
+        "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-300"
+
+      # Sub-agents — indigo
+      n when n in ~w[task read_agent list_agents] ->
+        "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300"
+
+      # SQL — teal
+      "sql" ->
+        "bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300"
+
+      # GitHub — slate
+      n when is_binary(n) and byte_size(n) > 0 ->
+        if String.starts_with?(n, "github-mcp-server-") do
+          "bg-slate-100 text-slate-800 dark:bg-slate-900/40 dark:text-slate-300"
+        else
+          "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+        end
+
+      _ ->
+        "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+    end
+  end
 end
