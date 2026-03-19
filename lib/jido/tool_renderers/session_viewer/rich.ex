@@ -88,18 +88,18 @@ defmodule Jido.ToolRenderers.SessionViewer.Rich do
 
       ~H"""
       <div class="chat chat-start group">
-        <div class="chat-bubble bg-base-100 text-base-content border border-base-300 max-w-full overflow-hidden">
-          <div class="markdown-body" id={@msg_id} phx-hook="MarkdownContent" data-markdown={@text}>
-          </div>
-          <div class="flex justify-end mt-1">
+        <div class="chat-bubble bg-base-100 text-base-content border border-base-300 max-w-full overflow-hidden relative">
+          <div class="sticky top-0 z-10 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
             <button
-              class="btn btn-ghost btn-xs"
+              class="btn btn-ghost btn-xs text-base-content/50 hover:text-base-content"
               phx-hook="CopyMarkdown"
               id={"copy-#{@msg_id}"}
               data-target={@msg_id}
             >
-              📋 Copy
+              📋
             </button>
+          </div>
+          <div class="markdown-body" id={@msg_id} phx-hook="MarkdownContent" data-markdown={@text}>
           </div>
         </div>
       </div>
@@ -115,16 +115,28 @@ defmodule Jido.ToolRenderers.SessionViewer.Rich do
     assigns = assign(assigns, text: text, md_id: md_id, truncated: truncated, preview: preview)
 
     ~H"""
-    <details class="ml-2 border-l-2 border-warning/30 pl-3 my-1">
+    <details class="ml-2 border-l-2 border-warning/30 pl-3 my-1 group/reasoning">
       <summary class="cursor-pointer text-sm text-base-content/40 italic">
         🧠 {@preview}
       </summary>
-      <div
-        class="markdown-body text-sm text-base-content/60 mt-1 p-2 bg-base-200/30 rounded"
-        id={@md_id}
-        phx-hook="MarkdownContent"
-        data-markdown={@text}
-      >
+      <div class="relative">
+        <div class="sticky top-0 z-10 flex justify-end opacity-0 group-hover/reasoning:opacity-100 transition-opacity">
+          <button
+            class="btn btn-ghost btn-xs text-base-content/50 hover:text-base-content"
+            phx-hook="CopyMarkdown"
+            id={"copy-#{@md_id}"}
+            data-target={@md_id}
+          >
+            📋
+          </button>
+        </div>
+        <div
+          class="markdown-body text-sm text-base-content/60 p-2 bg-base-200/30 rounded"
+          id={@md_id}
+          phx-hook="MarkdownContent"
+          data-markdown={@text}
+        >
+        </div>
       </div>
     </details>
     """
