@@ -214,6 +214,52 @@ defmodule Jido.ToolRenderers.Adapters.CopilotLv do
           metadata: extract_metadata(event)
         }
 
+      "system.notification" ->
+        content =
+          data
+          |> Map.get("data", %{})
+          |> Map.get("content", "System notification")
+
+        %SessionEvent{
+          id: id,
+          type: :session_info,
+          data: %{"content" => "📢 " <> content},
+          metadata: extract_metadata(event)
+        }
+
+      "session.task_complete" ->
+        summary =
+          data
+          |> Map.get("data", %{})
+          |> Map.get("summary", "Task completed")
+
+        %SessionEvent{
+          id: id,
+          type: :session_info,
+          data: %{"content" => "🏁 " <> summary},
+          metadata: extract_metadata(event)
+        }
+
+      "external_tool.requested" ->
+        arguments = Map.get(data, "arguments", %{})
+        question = Map.get(arguments, "question", "")
+
+        choices =
+          arguments
+          |> Map.get("choices", "")
+          |> then(fn
+            list when is_list(list) -> list
+            str when is_binary(str) and str != "" -> String.split(str, ",") |> Enum.map(&String.trim/1)
+            _ -> []
+          end)
+
+        %SessionEvent{
+          id: id,
+          type: :ask_user,
+          data: %{"question" => question, "choices" => choices},
+          metadata: extract_metadata(event)
+        }
+
       _ ->
         %SessionEvent{
           id: id,
