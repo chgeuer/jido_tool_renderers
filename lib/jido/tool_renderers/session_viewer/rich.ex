@@ -233,6 +233,8 @@ defmodule Jido.ToolRenderers.SessionViewer.Rich do
     assigns =
       assign(assigns,
         group_events: events,
+        tool_names: tool_names,
+        tool_count: tool_count,
         summary: summary,
         all_completed: all_completed,
         has_spinner: has_spinner
