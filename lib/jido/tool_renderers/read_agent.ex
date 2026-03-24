@@ -2,6 +2,7 @@ defmodule Jido.ToolRenderers.ReadAgent do
   @moduledoc "Renderer for `read_agent` and `list_agents` tools."
   use Phoenix.Component
   alias Jido.ToolRenderers.Generic
+  alias Jido.ToolRenderers.Components
 
   def render(assigns) do
     args = assigns.args || %{}
@@ -56,13 +57,11 @@ defmodule Jido.ToolRenderers.ReadAgent do
       <details class="text-xs" open>
         <summary class="cursor-pointer text-base-content/50">Agent result</summary>
         <div class="mt-1 p-3 bg-base-100 border border-base-300 rounded max-h-96 overflow-y-auto">
-          <div
-            class="markdown-body text-sm"
+          <Components.markdown_content
             id={@md_id}
-            phx-hook="MarkdownContent"
-            data-markdown={@body}
-          >
-          </div>
+            content={@body}
+            class="text-sm"
+          />
         </div>
       </details>
     <% end %>

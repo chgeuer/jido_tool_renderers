@@ -2,6 +2,7 @@ defmodule Jido.ToolRenderers.UpdateTodo do
   @moduledoc "Renderer for `update_todo` and `task_complete` tools."
   use Phoenix.Component
   alias Jido.ToolRenderers.Generic
+  alias Jido.ToolRenderers.Components
 
   def render(assigns) do
     args = assigns.args || %{}
@@ -51,13 +52,11 @@ defmodule Jido.ToolRenderers.UpdateTodo do
     </div>
     <%= if @todos != "" do %>
       <div class="mt-1 p-2 bg-base-100 border border-base-300 rounded">
-        <div
-          class="markdown-body text-sm"
+        <Components.markdown_content
           id={@md_id}
-          phx-hook="MarkdownContent"
-          data-markdown={@todos}
-        >
-        </div>
+          content={@todos}
+          class="text-sm"
+        />
       </div>
     <% end %>
     <Generic.error_display error_msg={@error_msg} />

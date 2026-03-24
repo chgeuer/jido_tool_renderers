@@ -1,6 +1,7 @@
 defmodule Jido.ToolRenderers.AskUser do
   use Phoenix.Component
   alias Jido.ToolRenderers.Generic
+  alias Jido.ToolRenderers.Components
 
   def render(assigns) do
     args = assigns.args || %{}
@@ -41,13 +42,11 @@ defmodule Jido.ToolRenderers.AskUser do
     </div>
     <div class="mt-1 p-3 bg-base-100 border border-base-300 rounded">
       <div class="border-l-4 border-warning/50 pl-3">
-        <div
-          class="markdown-body text-sm"
+        <Components.markdown_content
           id={"ask-q-#{@tool_call_id}"}
-          phx-hook="MarkdownContent"
-          data-markdown={@question}
-        >
-        </div>
+          content={@question}
+          class="text-sm"
+        />
       </div>
       <%= if @choices != [] do %>
         <div class="mt-2 space-y-1">

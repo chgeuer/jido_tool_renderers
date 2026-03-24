@@ -4,6 +4,7 @@ defmodule Jido.ToolRenderers.Generic do
   All specialized renderers follow the same callback pattern.
   """
   use Phoenix.Component
+  alias Jido.ToolRenderers.Components
 
   def render(assigns) do
     args_str =
@@ -84,18 +85,7 @@ defmodule Jido.ToolRenderers.Generic do
       <details class="text-xs" open>
         <summary class="cursor-pointer text-base-content/50">Result</summary>
         <div class="mt-1 p-3 bg-base-100 border border-base-300 rounded max-h-96 overflow-y-auto">
-          <div class="markdown-body" id={@md_id} phx-hook="MarkdownContent" data-markdown={@content}>
-          </div>
-          <div class="flex justify-end mt-1">
-            <button
-              class="btn btn-ghost btn-xs"
-              phx-hook="CopyMarkdown"
-              id={"copy-#{@md_id}"}
-              data-target={@md_id}
-            >
-              📋 Copy
-            </button>
-          </div>
+          <Components.markdown_content id={@md_id} content={@content} />
         </div>
       </details>
     <% end %>

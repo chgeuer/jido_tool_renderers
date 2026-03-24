@@ -2,6 +2,7 @@ defmodule Jido.ToolRenderers.FileWrite do
   @moduledoc "Renderer for `create` and `edit` tools."
   use Phoenix.Component
   alias Jido.ToolRenderers.Generic
+  alias Jido.ToolRenderers.Components
 
   def render(assigns) do
     args = if is_map(assigns.args), do: assigns.args, else: %{}
@@ -46,23 +47,7 @@ defmodule Jido.ToolRenderers.FileWrite do
             File content ({String.length(@file_text)} chars)
           </summary>
           <div class="mt-1 p-3 bg-base-100 border border-base-300 rounded max-h-96 overflow-y-auto">
-            <div
-              class="markdown-body"
-              id={@md_id}
-              phx-hook="MarkdownContent"
-              data-markdown={@file_text}
-            >
-            </div>
-            <div class="flex justify-end mt-1">
-              <button
-                class="btn btn-ghost btn-xs"
-                phx-hook="CopyMarkdown"
-                id={"copy-#{@md_id}"}
-                data-target={@md_id}
-              >
-                📋 Copy
-              </button>
-            </div>
+            <Components.markdown_content id={@md_id} content={@file_text} />
           </div>
         </details>
       <% else %>

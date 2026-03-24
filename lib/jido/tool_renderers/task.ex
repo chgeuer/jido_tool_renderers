@@ -1,6 +1,7 @@
 defmodule Jido.ToolRenderers.Task do
   use Phoenix.Component
   alias Jido.ToolRenderers.Generic
+  alias Jido.ToolRenderers.Components
 
   def render(assigns) do
     args = assigns.args || %{}
@@ -35,13 +36,11 @@ defmodule Jido.ToolRenderers.Task do
     <details class="text-xs">
       <summary class="cursor-pointer text-base-content/50">Prompt</summary>
       <div class="mt-1 p-3 bg-base-100 border border-base-300 rounded max-h-48 overflow-y-auto">
-        <div
-          class="markdown-body text-xs"
+        <Components.markdown_content
           id={"task-p-#{@md_id}"}
-          phx-hook="MarkdownContent"
-          data-markdown={@prompt}
-        >
-        </div>
+          content={@prompt}
+          class="text-xs"
+        />
       </div>
     </details>
     <Generic.error_display error_msg={@error_msg} />

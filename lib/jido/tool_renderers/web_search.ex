@@ -1,6 +1,7 @@
 defmodule Jido.ToolRenderers.WebSearch do
   use Phoenix.Component
   alias Jido.ToolRenderers.Generic
+  alias Jido.ToolRenderers.Components
 
   def render(assigns) do
     args = assigns.args || %{}
@@ -23,23 +24,7 @@ defmodule Jido.ToolRenderers.WebSearch do
       <details class="text-xs" open>
         <summary class="cursor-pointer text-base-content/50">Search results</summary>
         <div class="mt-1 p-3 bg-base-100 border border-base-300 rounded max-h-96 overflow-y-auto">
-          <div
-            class="markdown-body"
-            id={@md_id}
-            phx-hook="MarkdownContent"
-            data-markdown={@search_text}
-          >
-          </div>
-          <div class="flex justify-end mt-1">
-            <button
-              class="btn btn-ghost btn-xs"
-              phx-hook="CopyMarkdown"
-              id={"copy-#{@md_id}"}
-              data-target={@md_id}
-            >
-              📋 Copy
-            </button>
-          </div>
+          <Components.markdown_content id={@md_id} content={@search_text} />
         </div>
       </details>
       <%= if @citations != [] do %>

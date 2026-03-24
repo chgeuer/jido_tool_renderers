@@ -2,6 +2,7 @@ defmodule Jido.ToolRenderers.Sql do
   @moduledoc "Renderer for the `sql` tool. Detects tabular results."
   use Phoenix.Component
   alias Jido.ToolRenderers.Generic
+  alias Jido.ToolRenderers.Components
 
   def render(assigns) do
     args = assigns.args || %{}
@@ -26,14 +27,7 @@ defmodule Jido.ToolRenderers.Sql do
     <Generic.error_display error_msg={@error_msg} />
     <%= if @completed && @content != "" do %>
       <div class="mt-1 p-3 bg-base-100 border border-base-300 rounded max-h-96 overflow-x-auto overflow-y-auto">
-        <div
-          class="markdown-body"
-          id={@md_id}
-          phx-hook="MarkdownContent"
-          phx-update="ignore"
-          data-markdown={@content}
-        >
-        </div>
+        <Components.markdown_content id={@md_id} content={@content} />
       </div>
     <% end %>
     """

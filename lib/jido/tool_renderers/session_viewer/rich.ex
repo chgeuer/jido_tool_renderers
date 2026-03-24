@@ -17,6 +17,7 @@ defmodule Jido.ToolRenderers.SessionViewer.Rich do
   use Phoenix.Component
 
   alias Jido.ToolRenderers.SessionEvent
+  alias Jido.ToolRenderers.Components
 
   @doc """
   Renders a single session event as rich HTML.
@@ -87,20 +88,9 @@ defmodule Jido.ToolRenderers.SessionViewer.Rich do
       assigns = assign(assigns, text: text, msg_id: msg_id)
 
       ~H"""
-      <div class="chat chat-start group">
+      <div class="chat chat-start">
         <div class="chat-bubble bg-base-100 text-base-content border border-base-300 max-w-[80%] overflow-hidden relative">
-          <div class="sticky top-0 z-10 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-            <button
-              class="btn btn-ghost btn-xs text-base-content/50 hover:text-base-content"
-              phx-hook="CopyMarkdown"
-              id={"copy-#{@msg_id}"}
-              data-target={@msg_id}
-            >
-              📋
-            </button>
-          </div>
-          <div class="markdown-body" id={@msg_id} phx-hook="MarkdownContent" data-markdown={@text}>
-          </div>
+          <Components.markdown_content id={@msg_id} content={@text} />
         </div>
       </div>
       """
@@ -115,28 +105,16 @@ defmodule Jido.ToolRenderers.SessionViewer.Rich do
     assigns = assign(assigns, text: text, md_id: md_id, truncated: truncated, preview: preview)
 
     ~H"""
-    <details class="ml-2 border-l-2 border-warning/30 pl-3 my-1 group/reasoning">
+    <details class="ml-2 border-l-2 border-warning/30 pl-3 my-1">
       <summary class="cursor-pointer text-sm text-base-content/40 italic">
         🧠 {@preview}
       </summary>
-      <div class="relative">
-        <div class="sticky top-0 z-10 flex justify-end opacity-0 group-hover/reasoning:opacity-100 transition-opacity">
-          <button
-            class="btn btn-ghost btn-xs text-base-content/50 hover:text-base-content"
-            phx-hook="CopyMarkdown"
-            id={"copy-#{@md_id}"}
-            data-target={@md_id}
-          >
-            📋
-          </button>
-        </div>
-        <div
-          class="markdown-body text-sm text-base-content/60 p-2 bg-base-200/30 rounded"
+      <div class="mt-1 p-2 bg-base-200/30 rounded">
+        <Components.markdown_content
           id={@md_id}
-          phx-hook="MarkdownContent"
-          data-markdown={@text}
-        >
-        </div>
+          content={@text}
+          class="text-sm text-base-content/60"
+        />
       </div>
     </details>
     """
@@ -307,10 +285,11 @@ defmodule Jido.ToolRenderers.SessionViewer.Rich do
   end
 
   def event_item(%{event: %SessionEvent{type: :session_info, data: data}} = assigns) do
-    assigns = assign(assigns, :message, Map.get(data, "content", ""))
+    message = Map.get(data, "content", "")
+    assigns = assign(assigns, :message, message)
 
     ~H"""
-    <div class="alert alert-info text-sm">{@message}</div>
+    <div :if={@message != ""} class="alert alert-info text-sm">{@message}</div>
     """
   end
 
