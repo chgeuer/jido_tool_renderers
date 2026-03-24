@@ -45,7 +45,19 @@ defmodule Jido.ToolRenderers.EventStream do
     "external_tool.completed",
     "session.background_tasks_changed",
     "session.tools_updated",
-    "pending_messages.modified"
+    "pending_messages.modified",
+    # Codex-specific noise events
+    "codex_event",
+    "codex_token_update",
+    "codex_rate_limits_updated",
+    "codex_turn_diff_updated",
+    "codex_turn_plan_updated",
+    "codex_mcp_tool_progress",
+    "codex_request_user_input",
+    "codex_warning",
+    "codex_turn_continuation",
+    # File changes (tracked separately)
+    "file.change"
   ])
 
   @doc "Returns the set of event types that are filtered as noise."

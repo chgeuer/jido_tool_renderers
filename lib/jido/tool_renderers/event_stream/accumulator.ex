@@ -142,9 +142,15 @@ defmodule Jido.ToolRenderers.EventStream.Accumulator do
       })
 
     acc = %{acc | pending_tools: pending}
+
+    # When the first tool event arrives and there's already a visible assistant
+    # message, we steal the message's dom_id for the tool group. This replaces
+    # the message in-place (keeping it above the cursor) and re-emits the
+    # message with a fresh id so it appears after the tool group.
+    {acc, swap_actions} = maybe_swap_message_before_tools(acc)
     {acc, group_actions} = add_to_tool_group(acc, combined)
 
-    {acc, group_actions ++ [{:push_event, "scroll-bottom", %{}}]}
+    {acc, swap_actions ++ group_actions ++ [{:push_event, "scroll-bottom", %{}}]}
   end
 
   defp handle_tool_complete(acc, data) do
@@ -192,6 +198,35 @@ defmodule Jido.ToolRenderers.EventStream.Accumulator do
 
     {acc, group_actions} = add_to_tool_group(acc, event_map)
     {acc, group_actions ++ [{:push_event, "scroll-bottom", %{}}]}
+  end
+
+  # ── Message/tool ordering ──
+
+  # When the first tool event arrives in a turn and there's already a visible
+  # assistant message, we need to swap their positions so tools appear first.
+  #
+  # Strategy: give the tool group the old message's dom_id (replacing it
+  # in-place in the stream), then re-emit the message with a new dom_id
+  # so it appears at the end (after the tool group).
+  defp maybe_swap_message_before_tools(acc) do
+    if acc.tool_group_id == nil and acc.assistant_msg_id != nil and acc.assistant_text != "" do
+      old_msg_id = acc.assistant_msg_id
+      new_msg_id = "assistant-msg-#{System.unique_integer([:positive])}"
+
+      # The tool group will take the old message's position
+      acc = %{acc | tool_group_id: old_msg_id, assistant_msg_id: new_msg_id}
+
+      # Re-emit the assistant message with the new dom_id (appears at end)
+      msg_event = %{
+        type: "assistant.message.block",
+        data: %{"content" => acc.assistant_text},
+        dom_id: new_msg_id
+      }
+
+      {acc, [{:stream_insert, msg_event}]}
+    else
+      {acc, []}
+    end
   end
 
   # ── Tool group management ──
